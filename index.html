@@ -377,18 +377,18 @@ function isInPeriod(iso, period) {
   return false;
 }
 
-//const defaultState = () => {
-//  const s1 = uid('s'), s2 = uid('s');
-//  return {
-//    version: SCHEMA,
-//    services: [
-//      { id: s1, name: 'Консултация', points: 5 },
-//      { id: s2, name: 'Почистване', points: 3 }
-//    ],
-//    goals: [{ id: uid('g'), name: 'Месечна цел', target: 400, period: 'month', services: [s1, s2] }],
-//    sales: [],
-//  };
-//};
+const defaultState = () => {
+ const s1 = uid('s'), s2 = uid('s');
+  return {
+    version: SCHEMA,
+    services: [
+      { id: s1, name: 'Консултация', points: 5 },
+      { id: s2, name: 'Почистване', points: 3 }
+    ],
+    goals: [{ id: uid('g'), name: 'Месечна цел', target: 400, period: 'month', services: [s1, s2] }],
+    sales: [],
+  };
+};
 
 function migrate(old) {
   let data = { ...old };
