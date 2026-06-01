@@ -231,7 +231,6 @@
     .empty p { margin: 0; }
     .helper { font-size: 12px; color: var(--text-2); margin: 0 0 10px; }
 
-    /* Top stats row on dashboard */
     .top-stats { display: grid; grid-template-columns: 1fr 1fr; background: var(--bg-1); border-radius: var(--radius-md); margin-bottom: 16px; overflow: hidden; }
     .top-stat { padding: 12px 14px; }
     .top-stat + .top-stat { border-left: 0.5px solid var(--border); }
@@ -239,7 +238,6 @@
     .top-stat-value { font-family: 'Geist Mono', ui-monospace, monospace; display: block; font-size: 20px; font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
     .top-stat-value small { font-family: 'Geist', sans-serif; font-size: 11px; color: var(--text-3); font-weight: 400; letter-spacing: 0; }
 
-    /* Goals grid - side by side on dashboard */
     .goals-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .goals-grid.single { grid-template-columns: 1fr; }
     .goals-grid .goal-card { margin-bottom: 0; padding: 12px 14px; min-width: 0; }
@@ -251,7 +249,6 @@
       .goals-grid .goal-card { padding: 10px 12px; }
     }
 
-    /* Date picker for Sales view */
     .date-picker-section { background: var(--bg-1); border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 16px; }
     .date-picker-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
     .date-picker-label { font-size: 11px; color: var(--text-2); font-weight: 500; letter-spacing: -0.005em; }
@@ -264,7 +261,6 @@
     .btn-today { padding: 4px 10px; font-size: 11px; border-radius: 999px; border: 0.5px solid var(--border-strong); background: var(--bg-0); color: var(--text-2); cursor: pointer; font-family: inherit; font-weight: 500; transition: background .15s, color .15s; display: inline-flex; align-items: center; gap: 4px; }
     .btn-today:hover { background: var(--bg-2); color: var(--text-1); }
 
-    /* Celebration when goal complete */
     .celebration-pill {
       font-size: 11px;
       font-weight: 600;
@@ -290,7 +286,6 @@
     .hero-complete .hero-num,
     .goal-card-complete .goal-card-num { color: var(--success); }
 
-    /* Bar with overage (two segments) */
     .hero-bar.with-overage { display: flex; gap: 1px; }
     .hero-bar.with-overage .hero-bar-fill { border-radius: 3px 0 0 3px; }
     .hero-bar-overage {
@@ -305,7 +300,6 @@
       transition: width .5s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* Overage meta text */
     .overage-meta { color: var(--success); }
     .overage-meta span { font-weight: 500; }
     .overage-meta span:last-child { font-weight: 600; }
@@ -335,8 +329,8 @@
 <script>
 'use strict';
 
-const STORAGE_KEY = 'sales_tracker_v3';
-const SCHEMA = 4;
+const STORAGE_KEY = 'sales_tracker_v5';
+const SCHEMA = 5;
 const MONTHS = ['януари','февруари','март','април','май','юни','юли','август','септември','октомври','ноември','декември'];
 const MONTHS_SHORT = ['яну','фев','мар','апр','май','юни','юли','авг','сеп','окт','ное','дек'];
 const DAYS_BG = ['нд','пн','вт','ср','чт','пт','сб'];
@@ -377,60 +371,17 @@ function isInPeriod(iso, period) {
   return false;
 }
 
-const defaultState = () => {
- const s1 = uid('s'), s2 = uid('s');
-  return {
-    version: SCHEMA,
-    services: [
-      { id: s1, name: 'Консултация', points: 5 },
-      { id: s2, name: 'Почистване', points: 3 }
-    ],
-    goals: [{ id: uid('g'), name: 'Месечна цел', target: 400, period: 'month', services: [s1, s2] }],
-    sales: [],
-  };
-};
+const defaultState = () => ({
+  version: SCHEMA,
+  services: [],
+  goals: [],
+  sales: [],
+});
 
 function migrate(old) {
   let data = { ...old };
-  if (!data.version || data.version < 2) {
-    const services = (data.services || []).map(s => ({ id: s.id, name: s.name }));
-    const validIds = new Set(services.map(s => s.id));
-    const goalServices = (data.services || []).map(s => ({ serviceId: s.id, points: s.points || 1 }));
-    const goals = services.length ? [{ id: uid('g'), name: 'Месечна цел', target: data.targets?.monthly || 400, services: goalServices }] : [];
-    const sales = (data.sales || []).filter(s => validIds.has(s.refId)).map(s => ({ id: s.id, date: s.date, serviceId: s.refId }));
-    data = { version: 2, services, goals, sales, dailyTarget: 5 };
-  }
-  if (data.version === 2) {
-    data.goals = (data.goals || []).map(g => ({ ...g, period: g.period || 'month' }));
-    if (data.dailyTarget > 0 && data.services?.length > 0) {
-      data.goals.push({
-        id: uid('g'),
-        name: 'Брой продажби',
-        target: data.dailyTarget,
-        period: 'day',
-        services: data.services.map(s => ({ serviceId: s.id, points: 1 }))
-      });
-    }
-    delete data.dailyTarget;
-    data.version = 3;
-  }
-  if (data.version === 3) {
-    const servicePoints = {};
-    for (const g of data.goals || []) {
-      for (const e of g.services || []) {
-        if (!e || !e.serviceId) continue;
-        const pts = parseFloat(e.points) || 0;
-        if (servicePoints[e.serviceId] === undefined || pts > servicePoints[e.serviceId]) {
-          servicePoints[e.serviceId] = pts;
-        }
-      }
-    }
-    data.services = (data.services || []).map(s => ({ ...s, points: s.points ?? servicePoints[s.id] ?? 1 }));
-    data.goals = (data.goals || []).map(g => ({
-      ...g,
-      services: (g.services || []).map(e => typeof e === 'string' ? e : e?.serviceId).filter(Boolean)
-    }));
-    data.version = 4;
+  if (!data.version || data.version < SCHEMA) {
+    return defaultState();
   }
   return { ...defaultState(), ...data, version: SCHEMA };
 }
@@ -440,7 +391,8 @@ function loadState() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return defaultState();
     const data = JSON.parse(raw);
-    return data.version === SCHEMA ? data : migrate(data);
+    if (data.version === SCHEMA && data.services && data.goals && data.sales) return data;
+    return migrate(data);
   } catch { return defaultState(); }
 }
 function saveState(s) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch {} }
@@ -543,9 +495,9 @@ function logSale(serviceId, delta) {
   saveState(state); render();
 }
 function addService(name, points) {
-  if (!name) return 'invalid';
+  if (!name || name.trim() === '') return 'invalid';
   if (state.services.some(s => s.name === name)) return 'exists';
-  state.services.push({ id: uid('s'), name, points: points ?? 1 });
+  state.services.push({ id: uid('s'), name: name.trim(), points: points ?? 1 });
   saveState(state); render(); return 'ok';
 }
 function removeService(id) {
@@ -586,7 +538,7 @@ function cancelEditService() { editingServiceId = null; render(); }
 
 function addGoal(name, target, period) {
   if (!name || !(target > 0)) return 'invalid';
-  state.goals.push({ id: uid('g'), name, target: round(target), period: period || 'month', services: [] });
+  state.goals.push({ id: uid('g'), name: name.trim(), target: round(target), period: period || 'month', services: [] });
   saveState(state); render(); return 'ok';
 }
 function removeGoal(id) {
@@ -772,6 +724,8 @@ function renderDashboard() {
   const monthlyGoals = state.goals.filter(g => g.period === 'month');
   const dailyGoals = state.goals.filter(g => g.period === 'day');
 
+  const hasAnyGoals = totalGoals > 0;
+
   return `
     <div class="top-stats">
       <div class="top-stat">
@@ -784,33 +738,40 @@ function renderDashboard() {
       </div>
     </div>
 
-    <div class="section">
-      <h3 class="section-title">Дневни цели · днес</h3>
-      ${dailyGoals.length ? `
-        <div class="goals-grid ${dailyGoals.length === 1 ? 'single' : ''}">
-          ${dailyGoals.map(g => renderGoalCard(g)).join('')}
-        </div>
-      ` : `
-        <div class="empty">
-          <p>Все още нямаш дневни цели.</p>
-          <p style="margin-top:6px;font-size:11px">Дневните цели се нулират всеки ден.</p>
-        </div>
-      `}
-    </div>
+    ${hasAnyGoals ? `
+      <div class="section">
+        <h3 class="section-title">Дневни цели · днес</h3>
+        ${dailyGoals.length ? `
+          <div class="goals-grid ${dailyGoals.length === 1 ? 'single' : ''}">
+            ${dailyGoals.map(g => renderGoalCard(g)).join('')}
+          </div>
+        ` : `
+          <div class="empty">
+            <p>Нямаш дневни цели.</p>
+            <p style="margin-top:6px;font-size:11px">Дневните цели се нулират всеки ден.</p>
+          </div>
+        `}
+      </div>
 
-    <div class="section">
-      <h3 class="section-title">Месечни цели · ${MONTHS[new Date().getMonth()]}</h3>
-      ${monthlyGoals.length ? `
-        <div class="goals-grid ${monthlyGoals.length === 1 ? 'single' : ''}">
-          ${monthlyGoals.map(g => renderGoalCard(g)).join('')}
-        </div>
-      ` : `
-        <div class="empty">
-          <p>Все още нямаш месечни цели.</p>
-          <p style="margin-top:6px;font-size:11px">Иди в Настройки, за да създадеш първата си цел.</p>
-        </div>
-      `}
-    </div>
+      <div class="section">
+        <h3 class="section-title">Месечни цели · ${MONTHS[new Date().getMonth()]}</h3>
+        ${monthlyGoals.length ? `
+          <div class="goals-grid ${monthlyGoals.length === 1 ? 'single' : ''}">
+            ${monthlyGoals.map(g => renderGoalCard(g)).join('')}
+          </div>
+        ` : `
+          <div class="empty">
+            <p>Нямаш месечни цели.</p>
+            <p style="margin-top:6px;font-size:11px">Иди в Настройки, за да създадеш първата си цел.</p>
+          </div>
+        `}
+      </div>
+    ` : `
+      <div class="empty">
+        <p>Нямаш създадени цели.</p>
+        <p style="margin-top:6px;font-size:11px">Отиди в Настройки, за да добавиш първата си цел.</p>
+      </div>
+    `}
 
     ${ranks.length ? `
     <div class="section">
@@ -824,7 +785,7 @@ function renderDashboard() {
           </div>
           <div class="rank-value">${r.count}</div>
         </div>`; }).join('')}</div>
-    </div>` : ''}
+    </div>` : state.services.length ? `<div class="empty"><p>Няма продажби за месеца.</p></div>` : ''}
   `;
 }
 
@@ -882,7 +843,7 @@ function renderSales() {
     <div class="section">
       <h3 class="section-title"><span>Услуги</span><span style="font-weight:400">${dateLabel}: ${totalDay}</span></h3>
       ${state.services.length ? `<div class="item-list">${state.services.map(row).join('')}</div>` :
-        `<div class="empty">${ICONS.plusCircle}<p>Добави услуга в Настройки.</p></div>`}
+        `<div class="empty">${ICONS.plusCircle}<p>Няма добавени услуги. Отиди в Настройки, за да добавиш първата услуга.</p></div>`}
     </div>
   `;
 }
@@ -1013,8 +974,8 @@ function renderSettings() {
   `;
 
   return `
-    ${goalsSection('Месечни цели', 'Цели за целия месец — нулират се на първи всеки месец.', 'month', monthlyGoals, 400)}
-    ${goalsSection('Дневни цели', 'Цели за един ден — нулират се всяка нощ.', 'day', dailyGoals, 50)}
+    ${goalsSection('Месечни цели', 'Цели за целия месец — нулират се на първи всеки месец.', 'month', monthlyGoals, 100)}
+    ${goalsSection('Дневни цели', 'Цели за един ден — нулират се всяка нощ.', 'day', dailyGoals, 10)}
 
     <div class="section">
       <h3 class="section-title"><span>Услуги</span><span style="font-weight:400">${state.services.length}</span></h3>
@@ -1044,7 +1005,7 @@ function renderSettings() {
               <button class="btn-icon" data-action="edit-service" data-id="${s.id}" aria-label="Промени">${ICONS.edit}</button>
               <button class="btn-icon danger" data-action="del-service" data-id="${s.id}" aria-label="Премахни">${ICONS.trash}</button>
             </div>`;
-        }).join('') : `<div class="empty"><p>Няма услуги.</p></div>`}
+        }).join('') : `<div class="empty"><p>Няма добавени услуги.</p><p style="margin-top:6px;font-size:11px">Добави първата си услуга по-долу.</p></div>`}
       </div>
       <div class="form-card">
         <div class="form-row">
@@ -1079,8 +1040,10 @@ document.addEventListener('click', e => {
     const ptsRaw = parseFloat(document.getElementById('ns-points').value);
     const points = isFinite(ptsRaw) ? Math.max(0, ptsRaw) : 1;
     const r = addService(name, points);
-    if (r === 'invalid') alert('Въведи име.');
+    if (r === 'invalid') alert('Въведи име на услуга.');
     if (r === 'exists') alert('Услугата вече съществува.');
+    document.getElementById('ns-name').value = '';
+    document.getElementById('ns-points').value = '1';
   }
   else if (act === 'add-goal') {
     const period = a.dataset.period || 'month';
@@ -1088,6 +1051,10 @@ document.addEventListener('click', e => {
     const target = +document.getElementById(`ng-target-${period}`).value;
     const r = addGoal(name, target, period);
     if (r === 'invalid') alert('Въведи име и положителен таргет.');
+    if (r === 'ok') {
+      document.getElementById(`ng-name-${period}`).value = '';
+      document.getElementById(`ng-target-${period}`).value = period === 'day' ? '10' : '100';
+    }
   }
 });
 
