@@ -439,6 +439,14 @@
     .auth-tab.active { background: var(--bg-0); color: var(--text-1); box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
     .auth-tab:hover:not(.active) { color: var(--text-1); }
 
+    .auth-screen { min-height: 100dvh; display: flex; align-items: center; justify-content: center; padding: 24px 16px; background: var(--bg-0); }
+    .auth-card { width: 100%; max-width: 380px; background: var(--bg-1); border-radius: 20px; padding: 32px 24px; border: 0.5px solid var(--border); }
+    .auth-logo { font-size: 40px; text-align: center; margin-bottom: 12px; }
+    .auth-title { font-size: 22px; font-weight: 700; text-align: center; color: var(--text-1); margin: 0 0 6px; }
+    .auth-sub { font-size: 13px; color: var(--text-2); text-align: center; margin: 0 0 20px; }
+    .auth-form { display: flex; flex-direction: column; }
+    .auth-submit { width: 100%; padding: 13px; font-size: 15px; margin-top: 16px; justify-content: center; }
+
     .confetti-container { position: fixed; inset: 0; pointer-events: none; z-index: 9999; overflow: hidden; }
     .confetti-piece { position: absolute; top: -24px; border-radius: 1px; opacity: 0; animation-name: confetti-fall; animation-timing-function: cubic-bezier(0.4, 0.1, 0.6, 1); animation-fill-mode: forwards; }
     @keyframes confetti-fall {
@@ -594,8 +602,8 @@ function saveState(s) { s._updatedAt = Date.now(); try { localStorage.setItem(ST
 
 // ============ CLOUD SYNC ============
 // ⬇⬇⬇ ПОПЪЛНИ ТУК (Settings → API в Supabase) ⬇⬇⬇
-const SUPABASE_URL = 'https://ebgccfwrxfiiefajodjd.supabase.co';          // напр. 'https://abcdefg.supabase.co'
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2NjZndyeGZpaWVmYWpvZGpkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzODQ3NDMsImV4cCI6MjA5NTk2MDc0M30.zwvaSDeREJcoPRWhggQTqpa518xzF31J3gMeoYutWgw';     // anon public key, започва с 'eyJ...'
+const SUPABASE_URL = '';          // напр. 'https://abcdefg.supabase.co'
+const SUPABASE_ANON_KEY = '';     // anon public key, започва с 'eyJ...'
 // ⬆⬆⬆ ПОПЪЛНИ ТУК ⬆⬆⬆
 
 let supa = null;
@@ -1086,40 +1094,58 @@ function syncStatusBadge() {
 
 function renderCloudSection() {
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-    return `<p class="helper">Облачната синхронизация е изключена. За да я включиш, отвори HTML файла в текстов редактор и попълни <code>SUPABASE_URL</code> и <code>SUPABASE_ANON_KEY</code> в началото на &lt;script&gt; блока.</p>`;
-  }
-  if (!supaUser) {
-    const isSignIn = authMode === 'signin';
-    return `
-      <p class="helper">Влез в акаунта си или си направи нов, за да се синхронизират данните ти между устройства.</p>
-      <div class="auth-tabs">
-        <button class="auth-tab ${isSignIn ? 'active' : ''}" data-action="auth-mode" data-mode="signin">Вход</button>
-        <button class="auth-tab ${!isSignIn ? 'active' : ''}" data-action="auth-mode" data-mode="signup">Регистрация</button>
-      </div>
-      <div class="form-card">
-        <label class="cloud-label">Email</label>
-        <input type="email" id="auth-email" placeholder="ti@example.com" class="cloud-input" autocomplete="email"/>
-        <label class="cloud-label">Парола${!isSignIn ? ' (поне 6 символа)' : ''}</label>
-        <input type="password" id="auth-password" placeholder="••••••••" class="cloud-input" autocomplete="${isSignIn ? 'current-password' : 'new-password'}"/>
-        <button class="btn-primary cloud-btn" data-action="${isSignIn ? 'auth-signin' : 'auth-signup'}">${isSignIn ? 'Влез' : 'Регистрирай се'}</button>
-      </div>
-    `;
+    return `<p class="helper">Облачната синхронизация е изключена. За да я включиш, попълни <code>SUPABASE_URL</code> и <code>SUPABASE_ANON_KEY</code> в кода.</p>`;
   }
   const last = lastSyncTime ? new Date(lastSyncTime).toLocaleTimeString('bg-BG', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—';
   return `
-    <p class="helper">Влязъл си като <strong>${esc(supaUser.email || '')}</strong>. Данните се синхронизират автоматично.</p>
+    <p class="helper">Влязъл си като <strong>${esc(supaUser?.email || '')}</strong>.</p>
     <div class="cloud-info">
       <div class="cloud-info-row"><span>Последна синхронизация</span><span>${last}</span></div>
       ${syncStatus === 'error' ? `<div class="cloud-info-row err"><span>Грешка</span><span>${esc(syncError)}</span></div>` : ''}
     </div>
     <div class="backup-actions">
       <button class="btn-backup" data-action="cloud-sync-now">⟳ Синхронизирай</button>
-      <button class="btn-backup" data-action="auth-signout">Излез</button>
+      <button class="btn-backup" data-action="auth-signout">Излез от акаунта</button>
+    </div>
+  `;
+}
+
+function renderAuthScreen() {
+  const isSignIn = authMode === 'signin';
+  return `
+    <div class="auth-screen">
+      <div class="auth-card">
+        <div class="auth-logo">📊</div>
+        <h1 class="auth-title">Sales Tracker</h1>
+        <p class="auth-sub">Влез в акаунта си или се регистрирай</p>
+        <div class="auth-tabs" style="margin-bottom:16px">
+          <button class="auth-tab ${isSignIn ? 'active' : ''}" data-action="auth-mode" data-mode="signin">Вход</button>
+          <button class="auth-tab ${!isSignIn ? 'active' : ''}" data-action="auth-mode" data-mode="signup">Регистрация</button>
+        </div>
+        <div class="auth-form">
+          <label class="cloud-label">Email</label>
+          <input type="email" id="auth-email" placeholder="ti@example.com" class="cloud-input" autocomplete="email" autofocus/>
+          <label class="cloud-label" style="margin-top:10px">Парола${!isSignIn ? ' (поне 6 символа)' : ''}</label>
+          <input type="password" id="auth-password" placeholder="••••••••" class="cloud-input" autocomplete="${isSignIn ? 'current-password' : 'new-password'}"/>
+          <button class="btn-primary auth-submit" data-action="${isSignIn ? 'auth-signin' : 'auth-signup'}">${isSignIn ? 'Влез' : 'Регистрирай се'}</button>
+        </div>
+      </div>
     </div>
   `;
 }
 
 function render() {
+  // If Supabase configured but not yet signed in → show auth screen
+  if (SUPABASE_URL && SUPABASE_ANON_KEY) {
+    if (!supaUser) {
+      document.getElementById('nav').style.display = 'none';
+      const fab = document.getElementById('fab');
+      if (fab) fab.style.display = 'none';
+      document.getElementById('view').innerHTML = renderAuthScreen();
+      return;
+    }
+    document.getElementById('nav').style.display = '';
+  }
   document.getElementById('date').textContent = formatDate(todayISO());
   const navIcons = { dashboard: ICONS.navDashboard, sales: ICONS.navSales, analysis: ICONS.navAnalysis, settings: ICONS.navSettings };
   document.querySelectorAll('.nav-btn').forEach(t => {
