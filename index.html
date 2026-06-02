@@ -1136,15 +1136,19 @@ function renderAuthScreen() {
 
 function render() {
   // If Supabase configured but not yet signed in → show auth screen
+  const nav = document.querySelector('.bottom-nav');
+  const header = document.querySelector('.header');
   if (SUPABASE_URL && SUPABASE_ANON_KEY) {
     if (!supaUser) {
-      document.getElementById('nav').style.display = 'none';
+      if (nav) nav.style.display = 'none';
+      if (header) header.style.display = 'none';
       const fab = document.getElementById('fab');
       if (fab) fab.style.display = 'none';
       document.getElementById('view').innerHTML = renderAuthScreen();
       return;
     }
-    document.getElementById('nav').style.display = '';
+    if (nav) nav.style.display = '';
+    if (header) header.style.display = '';
   }
   document.getElementById('date').textContent = formatDate(todayISO());
   const navIcons = { dashboard: ICONS.navDashboard, sales: ICONS.navSales, analysis: ICONS.navAnalysis, settings: ICONS.navSettings };
