@@ -75,8 +75,98 @@
     .app {
       width: 100%;
       max-width: 560px;
-      padding: 1.5rem 1.125rem 4rem;
+      padding: 1.5rem 1.125rem calc(80px + env(safe-area-inset-bottom));
     }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      background: var(--bg-0);
+      border-top: 0.5px solid var(--border);
+      padding: 7px 8px calc(7px + env(safe-area-inset-bottom));
+      z-index: 100;
+      max-width: 560px;
+      margin: 0 auto;
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+    }
+    .nav-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 5px 4px;
+      border: none;
+      background: transparent;
+      color: var(--text-3);
+      cursor: pointer;
+      font-family: inherit;
+      transition: color .15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .nav-btn:active { transform: scale(0.93); }
+    .nav-btn.active { color: var(--accent); }
+    .nav-icon { display: flex; align-items: center; justify-content: center; height: 22px; }
+    .nav-label { font-size: 10px; font-weight: 500; letter-spacing: -0.01em; }
+
+    .fab {
+      position: fixed;
+      right: max(18px, calc((100vw - 560px) / 2 + 18px));
+      bottom: calc(82px + env(safe-area-inset-bottom));
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: var(--accent-fg);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 90;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.22);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .fab:active { transform: scale(0.88); }
+
+    .sheet-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 200;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s;
+    }
+    .sheet-overlay.open { opacity: 1; pointer-events: auto; }
+    .sheet {
+      width: 100%;
+      max-width: 560px;
+      background: var(--bg-0);
+      border-radius: 22px 22px 0 0;
+      padding: 8px 16px calc(18px + env(safe-area-inset-bottom));
+      max-height: 78vh;
+      overflow-y: auto;
+      transform: translateY(100%);
+      transition: transform .3s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .sheet-overlay.open .sheet { transform: translateY(0); }
+    .sheet-handle { width: 36px; height: 4px; border-radius: 2px; background: var(--border-strong); margin: 6px auto 14px; }
+    .sheet-title { font-size: 14px; font-weight: 500; display: block; margin-bottom: 14px; padding: 0 2px; color: var(--text-2); }
+    .sheet-body { display: flex; flex-direction: column; gap: 4px; }
+    .qa-row { display: flex; align-items: center; gap: 12px; padding: 8px 4px; }
+    .qa-info { flex: 1; min-width: 0; }
+    .qa-name { font-size: 14px; font-weight: 500; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .qa-meta { font-size: 11px; color: var(--text-2); margin: 1px 0 0; font-variant-numeric: tabular-nums; }
+    .sheet-done { width: 100%; margin-top: 18px; padding: 13px; border-radius: 10px; border: none; background: var(--text-1); color: var(--bg-0); font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer; transition: opacity .15s; }
+    .sheet-done:active { opacity: 0.85; }
 
     .header { margin-bottom: 1.25rem; }
     .brand { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
@@ -231,6 +321,7 @@
     .empty p { margin: 0; }
     .helper { font-size: 12px; color: var(--text-2); margin: 0 0 10px; }
 
+    /* Top stats row on dashboard */
     .top-stats { display: grid; grid-template-columns: 1fr 1fr; background: var(--bg-1); border-radius: var(--radius-md); margin-bottom: 16px; overflow: hidden; }
     .top-stat { padding: 12px 14px; }
     .top-stat + .top-stat { border-left: 0.5px solid var(--border); }
@@ -238,6 +329,7 @@
     .top-stat-value { font-family: 'Geist Mono', ui-monospace, monospace; display: block; font-size: 20px; font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
     .top-stat-value small { font-family: 'Geist', sans-serif; font-size: 11px; color: var(--text-3); font-weight: 400; letter-spacing: 0; }
 
+    /* Goals grid - side by side on dashboard */
     .goals-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .goals-grid.single { grid-template-columns: 1fr; }
     .goals-grid .goal-card { margin-bottom: 0; padding: 12px 14px; min-width: 0; }
@@ -249,6 +341,7 @@
       .goals-grid .goal-card { padding: 10px 12px; }
     }
 
+    /* Date picker for Sales view */
     .date-picker-section { background: var(--bg-1); border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 16px; }
     .date-picker-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
     .date-picker-label { font-size: 11px; color: var(--text-2); font-weight: 500; letter-spacing: -0.005em; }
@@ -261,6 +354,7 @@
     .btn-today { padding: 4px 10px; font-size: 11px; border-radius: 999px; border: 0.5px solid var(--border-strong); background: var(--bg-0); color: var(--text-2); cursor: pointer; font-family: inherit; font-weight: 500; transition: background .15s, color .15s; display: inline-flex; align-items: center; gap: 4px; }
     .btn-today:hover { background: var(--bg-2); color: var(--text-1); }
 
+    /* Celebration when goal complete */
     .celebration-pill {
       font-size: 11px;
       font-weight: 600;
@@ -286,6 +380,7 @@
     .hero-complete .hero-num,
     .goal-card-complete .goal-card-num { color: var(--success); }
 
+    /* Bar with overage (two segments) */
     .hero-bar.with-overage { display: flex; gap: 1px; }
     .hero-bar.with-overage .hero-bar-fill { border-radius: 3px 0 0 3px; }
     .hero-bar-overage {
@@ -300,10 +395,56 @@
       transition: width .5s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
+    /* Overage meta text */
     .overage-meta { color: var(--success); }
     .overage-meta span { font-weight: 500; }
     .overage-meta span:last-child { font-weight: 600; }
     .complete-meta { color: var(--success); font-weight: 500; }
+
+    .bar-wrap { position: relative; }
+    .pace-marker { position: absolute; top: -3px; height: 12px; width: 2px; background: var(--text-1); border-radius: 1px; transform: translateX(-50%); opacity: 0.45; }
+    .pace-ahead { color: var(--success); font-weight: 500; }
+    .pace-behind { color: var(--danger); font-weight: 500; }
+    .pace-ontrack { color: var(--text-2); font-weight: 500; }
+
+    .pace-hint { background: var(--bg-1); border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 16px; }
+    .pace-hint-title { font-size: 11px; color: var(--text-2); font-weight: 500; margin-bottom: 8px; }
+    .pace-hint-row { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; font-size: 13px; gap: 12px; }
+    .pace-hint-name { color: var(--text-1); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .pace-hint-val { color: var(--accent); font-weight: 500; font-variant-numeric: tabular-nums; white-space: nowrap; flex-shrink: 0; }
+    .pace-hint-val.done { color: var(--success); }
+
+    .backup-actions { display: flex; gap: 8px; margin-top: 12px; }
+    .btn-backup { flex: 1; padding: 12px; border-radius: 10px; border: 0.5px solid var(--border-strong); background: var(--bg-0); color: var(--text-1); cursor: pointer; font-family: inherit; font-weight: 500; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: background .15s, border-color .15s; }
+    .btn-backup:hover { background: var(--bg-2); border-color: var(--accent); color: var(--accent); }
+    .btn-backup svg { flex-shrink: 0; }
+
+    .sync-badge { font-size: 10px; font-weight: 500; padding: 3px 8px; border-radius: 999px; letter-spacing: 0.02em; }
+    .sync-badge.ok { background: var(--success-bg); color: var(--success); }
+    .sync-badge.syncing { background: var(--bg-2); color: var(--text-2); }
+    .sync-badge.err { background: var(--danger-bg); color: var(--danger); }
+    .sync-badge.warn { background: var(--bg-2); color: var(--text-2); }
+    .cloud-label { display: block; font-size: 11px; color: var(--text-2); margin-bottom: 4px; font-weight: 500; margin-top: 8px; }
+    .cloud-label:first-child { margin-top: 0; }
+    .cloud-input { width: 100%; padding: 10px 12px; border-radius: 8px; border: 0.5px solid var(--border-strong); background: var(--bg-0); color: var(--text-1); font-family: inherit; font-size: 13px; box-sizing: border-box; }
+    .cloud-input:focus { outline: none; border-color: var(--accent); }
+    .cloud-btn { width: 100%; margin-top: 12px; padding: 12px; justify-content: center; }
+    .cloud-info { background: var(--bg-0); border-radius: 10px; padding: 10px 12px; margin: 10px 0; border: 0.5px solid var(--border); }
+    .cloud-info-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px; color: var(--text-2); }
+    .cloud-info-row strong, .cloud-info-row span:last-child { color: var(--text-1); font-weight: 500; }
+    .cloud-info-row.err span:last-child { color: var(--danger); }
+
+    .auth-tabs { display: flex; gap: 4px; background: var(--bg-1); padding: 4px; border-radius: 10px; margin-bottom: 12px; }
+    .auth-tab { flex: 1; padding: 9px; border-radius: 7px; border: none; background: transparent; color: var(--text-2); cursor: pointer; font-family: inherit; font-weight: 500; font-size: 13px; transition: all .15s; }
+    .auth-tab.active { background: var(--bg-0); color: var(--text-1); box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+    .auth-tab:hover:not(.active) { color: var(--text-1); }
+
+    .confetti-container { position: fixed; inset: 0; pointer-events: none; z-index: 9999; overflow: hidden; }
+    .confetti-piece { position: absolute; top: -24px; border-radius: 1px; opacity: 0; animation-name: confetti-fall; animation-timing-function: cubic-bezier(0.4, 0.1, 0.6, 1); animation-fill-mode: forwards; }
+    @keyframes confetti-fall {
+      0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(106vh) translateX(var(--drift)) rotate(var(--rot)); opacity: 1; }
+    }
   </style>
 </head>
 <body>
@@ -316,21 +457,33 @@
         </h2>
         <span class="date-badge" id="date"></span>
       </div>
-      <div class="tabs" role="tablist">
-        <button class="tab active" data-view="dashboard">Табло</button>
-        <button class="tab" data-view="sales">Продажби</button>
-        <button class="tab" data-view="analysis">Анализ</button>
-        <button class="tab" data-view="settings">Настройки</button>
-      </div>
     </header>
     <main id="view" class="view"></main>
+    <nav class="bottom-nav" role="tablist">
+      <button class="nav-btn active" data-view="dashboard"><span class="nav-icon"></span><span class="nav-label">Табло</span></button>
+      <button class="nav-btn" data-view="sales"><span class="nav-icon"></span><span class="nav-label">Продажби</span></button>
+      <button class="nav-btn" data-view="analysis"><span class="nav-icon"></span><span class="nav-label">Анализ</span></button>
+      <button class="nav-btn" data-view="settings"><span class="nav-icon"></span><span class="nav-label">Настройки</span></button>
+    </nav>
+    <button class="fab" id="fab" data-action="open-quickadd" aria-label="Бързо записване">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+    <div class="sheet-overlay" id="sheet-overlay">
+      <div class="sheet">
+        <div class="sheet-handle"></div>
+        <span class="sheet-title">Бързо записване · днес</span>
+        <div class="sheet-body" id="sheet-body"></div>
+        <button class="sheet-done" data-action="close-quickadd">Готово</button>
+      </div>
+    </div>
   </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 'use strict';
 
-const STORAGE_KEY = 'sales_tracker_v5';
-const SCHEMA = 5;
+const STORAGE_KEY = 'sales_tracker_v4';
+const SCHEMA = 4;
 const MONTHS = ['януари','февруари','март','април','май','юни','юли','август','септември','октомври','ноември','декември'];
 const MONTHS_SHORT = ['яну','фев','мар','апр','май','юни','юли','авг','сеп','окт','ное','дек'];
 const DAYS_BG = ['нд','пн','вт','ср','чт','пт','сб'];
@@ -345,6 +498,12 @@ const ICONS = {
   plus: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
   plusCircle: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.4; margin-bottom:8px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>',
   chartBarOff: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.4; margin-bottom:8px"><path d="M3 3l18 18"/><path d="M9 12v7M15 8v11M3 20h18"/></svg>',
+  navDashboard: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>',
+  navSales: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>',
+  navAnalysis: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
+  navSettings: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>',
+  download: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+  upload: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>',
 };
 
 const uid = p => `${p}_${Date.now().toString(36)}${Math.random().toString(36).slice(2,7)}`;
@@ -380,8 +539,45 @@ const defaultState = () => ({
 
 function migrate(old) {
   let data = { ...old };
-  if (!data.version || data.version < SCHEMA) {
-    return defaultState();
+  if (!data.version || data.version < 2) {
+    const services = (data.services || []).map(s => ({ id: s.id, name: s.name }));
+    const validIds = new Set(services.map(s => s.id));
+    const goalServices = (data.services || []).map(s => ({ serviceId: s.id, points: s.points || 1 }));
+    const goals = services.length ? [{ id: uid('g'), name: 'Месечна цел', target: data.targets?.monthly || 400, services: goalServices }] : [];
+    const sales = (data.sales || []).filter(s => validIds.has(s.refId)).map(s => ({ id: s.id, date: s.date, serviceId: s.refId }));
+    data = { version: 2, services, goals, sales, dailyTarget: 5 };
+  }
+  if (data.version === 2) {
+    data.goals = (data.goals || []).map(g => ({ ...g, period: g.period || 'month' }));
+    if (data.dailyTarget > 0 && data.services?.length > 0) {
+      data.goals.push({
+        id: uid('g'),
+        name: 'Брой продажби',
+        target: data.dailyTarget,
+        period: 'day',
+        services: data.services.map(s => ({ serviceId: s.id, points: 1 }))
+      });
+    }
+    delete data.dailyTarget;
+    data.version = 3;
+  }
+  if (data.version === 3) {
+    const servicePoints = {};
+    for (const g of data.goals || []) {
+      for (const e of g.services || []) {
+        if (!e || !e.serviceId) continue;
+        const pts = parseFloat(e.points) || 0;
+        if (servicePoints[e.serviceId] === undefined || pts > servicePoints[e.serviceId]) {
+          servicePoints[e.serviceId] = pts;
+        }
+      }
+    }
+    data.services = (data.services || []).map(s => ({ ...s, points: s.points ?? servicePoints[s.id] ?? 1 }));
+    data.goals = (data.goals || []).map(g => ({
+      ...g,
+      services: (g.services || []).map(e => typeof e === 'string' ? e : e?.serviceId).filter(Boolean)
+    }));
+    data.version = 4;
   }
   return { ...defaultState(), ...data, version: SCHEMA };
 }
@@ -391,11 +587,178 @@ function loadState() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return defaultState();
     const data = JSON.parse(raw);
-    if (data.version === SCHEMA && data.services && data.goals && data.sales) return data;
-    return migrate(data);
+    return data.version === SCHEMA ? data : migrate(data);
   } catch { return defaultState(); }
 }
-function saveState(s) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch {} }
+function saveState(s) { s._updatedAt = Date.now(); try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch {} queueCloudSync(); }
+
+// ============ CLOUD SYNC ============
+// ⬇⬇⬇ ПОПЪЛНИ ТУК (Settings → API в Supabase) ⬇⬇⬇
+const SUPABASE_URL = 'https://ebgccfwrxfiiefajodjd.supabase.co/rest/v1/';          // напр. 'https://abcdefg.supabase.co'
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2NjZndyeGZpaWVmYWpvZGpkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzODQ3NDMsImV4cCI6MjA5NTk2MDc0M30.zwvaSDeREJcoPRWhggQTqpa518xzF31J3gMeoYutWgw';     // anon public key, започва с 'eyJ...'
+// ⬆⬆⬆ ПОПЪЛНИ ТУК ⬆⬆⬆
+
+let supa = null;
+let supaUser = null;
+let syncStatus = 'idle'; // idle | syncing | error | offline | not-configured | needs-signin
+let syncError = '';
+let syncTimer = null;
+let lastSyncTime = 0;
+let cloudInitialized = false;
+let authMode = 'signin'; // signin | signup
+
+function initCloud() {
+  if (cloudInitialized) return;
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) { syncStatus = 'not-configured'; return; }
+  if (!window.supabase) { syncStatus = 'error'; syncError = 'Supabase SDK не е зареден.'; return; }
+  try {
+    supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    cloudInitialized = true;
+    supa.auth.onAuthStateChange((event, session) => {
+      const wasSignedIn = !!supaUser;
+      supaUser = session?.user || null;
+      syncStatus = supaUser ? 'idle' : 'needs-signin';
+      if (supaUser && !wasSignedIn) loadFromCloud();
+      render();
+    });
+    supa.auth.getSession().then(({ data }) => {
+      supaUser = data.session?.user || null;
+      syncStatus = supaUser ? 'idle' : 'needs-signin';
+      if (supaUser) loadFromCloud();
+      render();
+    });
+  } catch (e) {
+    syncStatus = 'error'; syncError = 'Грешка при инициализация: ' + e.message;
+  }
+}
+
+async function cloudSignIn(email, password) {
+  if (!supa) return alert('Supabase не е настроен.');
+  if (!email || !email.includes('@')) return alert('Въведи валиден email.');
+  if (!password) return alert('Въведи парола.');
+  try {
+    const { error } = await supa.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+  } catch (e) {
+    alert('Грешка при вход: ' + e.message);
+  }
+}
+
+async function cloudSignUp(email, password) {
+  if (!supa) return alert('Supabase не е настроен.');
+  if (!email || !email.includes('@')) return alert('Въведи валиден email.');
+  if (!password || password.length < 6) return alert('Паролата трябва да е поне 6 символа.');
+  try {
+    const { data, error } = await supa.auth.signUp({ email, password });
+    if (error) throw error;
+    if (data.user && data.session) {
+      // Auto sign-in (email confirmation disabled)
+    } else if (data.user) {
+      alert('Изпратихме потвърждаващ email на ' + email + '. Отвори линка в него, после се впиши.');
+    }
+  } catch (e) {
+    alert('Грешка при регистрация: ' + e.message);
+  }
+}
+
+async function cloudSignOut() {
+  if (!supa) return;
+  await supa.auth.signOut();
+  supaUser = null;
+  syncStatus = 'needs-signin';
+  render();
+}
+
+async function loadFromCloud() {
+  if (!supa || !supaUser) return;
+  try {
+    syncStatus = 'syncing'; render();
+    const { data, error } = await supa
+      .from('tracker_state')
+      .select('state, updated_at')
+      .eq('user_id', supaUser.id)
+      .maybeSingle();
+    if (error) throw error;
+    if (data && data.state) {
+      const cloudUpdated = new Date(data.updated_at).getTime();
+      const localUpdated = state._updatedAt || 0;
+      const localHasData = state.services.length > 0 || state.sales.length > 0;
+      if (cloudUpdated > localUpdated || !localHasData) {
+        const cloudState = data.state.version === SCHEMA ? data.state : migrate(data.state);
+        cloudState._updatedAt = cloudUpdated;
+        state = cloudState;
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+      } else if (localUpdated > cloudUpdated) {
+        await pushToCloud();
+      }
+    } else if (state.services.length || state.sales.length) {
+      await pushToCloud();
+    }
+    lastSyncTime = Date.now();
+    syncStatus = 'idle';
+    render();
+  } catch (e) {
+    syncStatus = 'error'; syncError = e.message; render();
+  }
+}
+
+async function pushToCloud() {
+  if (!supa || !supaUser) return;
+  try {
+    syncStatus = 'syncing'; render();
+    state._updatedAt = Date.now();
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+    const { error } = await supa
+      .from('tracker_state')
+      .upsert({ user_id: supaUser.id, state: state, updated_at: new Date(state._updatedAt).toISOString() });
+    if (error) throw error;
+    lastSyncTime = Date.now();
+    syncStatus = 'idle';
+    render();
+  } catch (e) {
+    syncStatus = 'error'; syncError = e.message; render();
+  }
+}
+
+function queueCloudSync() {
+  if (!supa || !supaUser) return;
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(pushToCloud, 800);
+}
+
+function exportData() {
+  const data = JSON.stringify(state, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const d = new Date();
+  const stamp = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  a.href = url; a.download = `sales-tracker-${stamp}.json`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function importData(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      if (!parsed || typeof parsed !== 'object' || !Array.isArray(parsed.services) || !Array.isArray(parsed.goals) || !Array.isArray(parsed.sales)) {
+        throw new Error('Файлът няма очаквания формат.');
+      }
+      const ok = confirm(`Това ще ЗАМЕНИ всички текущи данни:\n• ${parsed.services.length} услуги\n• ${parsed.goals.length} цели\n• ${parsed.sales.length} продажби\n\nПродължи?`);
+      if (!ok) return;
+      const migrated = parsed.version === SCHEMA ? parsed : migrate(parsed);
+      state = migrated;
+      saveState(state); render();
+      alert('Данните са възстановени.');
+    } catch (err) {
+      alert('Грешка при импорт: ' + err.message);
+    }
+  };
+  reader.onerror = () => alert('Грешка при четене на файла.');
+  reader.readAsText(file);
+}
 
 let state = loadState();
 let currentView = 'dashboard';
@@ -403,6 +766,7 @@ let currentPeriod = 'month';
 let currentSaleDate = todayISO();
 let editingGoalId = null;
 let editingServiceId = null;
+let quickAddOpen = false;
 
 const salesInPeriod = p => state.sales.filter(s => isInPeriod(s.date, p));
 
@@ -485,19 +849,54 @@ function trendForGoal(goal) {
   return { pct: ((cur - prev) / prev) * 100 };
 }
 
-function logSale(serviceId, delta) {
-  if (delta > 0) state.sales.push({ id: uid('sale'), date: currentSaleDate, serviceId });
+function completedGoalIds() {
+  const ids = new Set();
+  const today = salesInPeriod('today');
+  const month = salesInPeriod('month');
+  for (const g of state.goals) {
+    if (g.target <= 0) continue;
+    const ps = g.period === 'day' ? today : month;
+    if (pointsForGoal(g, ps) >= g.target) ids.add(g.id);
+  }
+  return ids;
+}
+
+function fireConfetti() {
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const colors = ['#7F77DD','#1D9E75','#D85A30','#D4537E','#378ADD','#639922','#BA7517','#2dd585','#FFD93D'];
+  const container = document.createElement('div');
+  container.className = 'confetti-container';
+  for (let i = 0; i < 90; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const size = 6 + Math.random() * 6;
+    p.style.cssText = `left:${Math.random()*100}%;width:${size}px;height:${size*0.5}px;background:${color};animation-delay:${Math.random()*0.4}s;animation-duration:${1.8+Math.random()*1.4}s;--drift:${(Math.random()-0.5)*260}px;--rot:${Math.random()*720-360}deg;`;
+    container.appendChild(p);
+  }
+  document.body.appendChild(container);
+  setTimeout(() => container.remove(), 3800);
+}
+
+function logSale(serviceId, delta, date) {
+  const before = delta > 0 ? completedGoalIds() : null;
+  const d = date || currentSaleDate;
+  if (delta > 0) state.sales.push({ id: uid('sale'), date: d, serviceId });
   else {
     for (let i = state.sales.length - 1; i >= 0; i--) {
-      if (state.sales[i].date === currentSaleDate && state.sales[i].serviceId === serviceId) { state.sales.splice(i, 1); break; }
+      if (state.sales[i].date === d && state.sales[i].serviceId === serviceId) { state.sales.splice(i, 1); break; }
     }
   }
   saveState(state); render();
+  if (before) {
+    const after = completedGoalIds();
+    for (const id of after) { if (!before.has(id)) { fireConfetti(); break; } }
+  }
 }
 function addService(name, points) {
-  if (!name || name.trim() === '') return 'invalid';
+  if (!name) return 'invalid';
   if (state.services.some(s => s.name === name)) return 'exists';
-  state.services.push({ id: uid('s'), name: name.trim(), points: points ?? 1 });
+  state.services.push({ id: uid('s'), name, points: points ?? 1 });
   saveState(state); render(); return 'ok';
 }
 function removeService(id) {
@@ -538,7 +937,7 @@ function cancelEditService() { editingServiceId = null; render(); }
 
 function addGoal(name, target, period) {
   if (!name || !(target > 0)) return 'invalid';
-  state.goals.push({ id: uid('g'), name: name.trim(), target: round(target), period: period || 'month', services: [] });
+  state.goals.push({ id: uid('g'), name, target: round(target), period: period || 'month', services: [] });
   saveState(state); render(); return 'ok';
 }
 function removeGoal(id) {
@@ -646,11 +1045,93 @@ function renderTrendChart() {
   `;
 }
 
+function openQuickAdd() { quickAddOpen = true; document.getElementById('sheet-overlay').classList.add('open'); renderQuickAddBody(); }
+function closeQuickAdd() { quickAddOpen = false; document.getElementById('sheet-overlay').classList.remove('open'); }
+function renderQuickAddBody() {
+  const body = document.getElementById('sheet-body');
+  if (!body) return;
+  const todaySales = state.sales.filter(s => s.date === todayISO());
+  const counts = countByService(todaySales);
+  if (!state.services.length) {
+    body.innerHTML = `<div class="empty"><p>Нямаш услуги. Добави в Настройки.</p></div>`;
+    return;
+  }
+  body.innerHTML = state.services.map(s => {
+    const c = counts[s.id] || 0;
+    return `
+      <div class="qa-row">
+        <div class="cat-icon" style="background:${serviceColor(s.id)}">${initial(s.name)}</div>
+        <div class="qa-info">
+          <p class="qa-name">${esc(s.name)}</p>
+          <p class="qa-meta">${fmt(s.points || 0)} т.</p>
+        </div>
+        <div class="counter">
+          <button data-action="qa-dec" data-id="${s.id}" aria-label="Намали">−</button>
+          <span class="count">${c}</span>
+          <button data-action="qa-inc" data-id="${s.id}" aria-label="Увеличи">+</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function syncStatusBadge() {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return '';
+  if (syncStatus === 'syncing') return `<span class="sync-badge syncing">⟳ Синхронизира</span>`;
+  if (syncStatus === 'offline') return `<span class="sync-badge warn">● Offline</span>`;
+  if (syncStatus === 'error') return `<span class="sync-badge err">● Грешка</span>`;
+  if (syncStatus === 'needs-signin') return `<span class="sync-badge warn">● Вход нужен</span>`;
+  if (syncStatus === 'idle' && supaUser) return `<span class="sync-badge ok">● Синхронизирано</span>`;
+  return '';
+}
+
+function renderCloudSection() {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    return `<p class="helper">Облачната синхронизация е изключена. За да я включиш, отвори HTML файла в текстов редактор и попълни <code>SUPABASE_URL</code> и <code>SUPABASE_ANON_KEY</code> в началото на &lt;script&gt; блока.</p>`;
+  }
+  if (!supaUser) {
+    const isSignIn = authMode === 'signin';
+    return `
+      <p class="helper">Влез в акаунта си или си направи нов, за да се синхронизират данните ти между устройства.</p>
+      <div class="auth-tabs">
+        <button class="auth-tab ${isSignIn ? 'active' : ''}" data-action="auth-mode" data-mode="signin">Вход</button>
+        <button class="auth-tab ${!isSignIn ? 'active' : ''}" data-action="auth-mode" data-mode="signup">Регистрация</button>
+      </div>
+      <div class="form-card">
+        <label class="cloud-label">Email</label>
+        <input type="email" id="auth-email" placeholder="ti@example.com" class="cloud-input" autocomplete="email"/>
+        <label class="cloud-label">Парола${!isSignIn ? ' (поне 6 символа)' : ''}</label>
+        <input type="password" id="auth-password" placeholder="••••••••" class="cloud-input" autocomplete="${isSignIn ? 'current-password' : 'new-password'}"/>
+        <button class="btn-primary cloud-btn" data-action="${isSignIn ? 'auth-signin' : 'auth-signup'}">${isSignIn ? 'Влез' : 'Регистрирай се'}</button>
+      </div>
+    `;
+  }
+  const last = lastSyncTime ? new Date(lastSyncTime).toLocaleTimeString('bg-BG', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—';
+  return `
+    <p class="helper">Влязъл си като <strong>${esc(supaUser.email || '')}</strong>. Данните се синхронизират автоматично.</p>
+    <div class="cloud-info">
+      <div class="cloud-info-row"><span>Последна синхронизация</span><span>${last}</span></div>
+      ${syncStatus === 'error' ? `<div class="cloud-info-row err"><span>Грешка</span><span>${esc(syncError)}</span></div>` : ''}
+    </div>
+    <div class="backup-actions">
+      <button class="btn-backup" data-action="cloud-sync-now">⟳ Синхронизирай</button>
+      <button class="btn-backup" data-action="auth-signout">Излез</button>
+    </div>
+  `;
+}
+
 function render() {
   document.getElementById('date').textContent = formatDate(todayISO());
-  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.view === currentView));
+  const navIcons = { dashboard: ICONS.navDashboard, sales: ICONS.navSales, analysis: ICONS.navAnalysis, settings: ICONS.navSettings };
+  document.querySelectorAll('.nav-btn').forEach(t => {
+    t.classList.toggle('active', t.dataset.view === currentView);
+    const iconSpan = t.querySelector('.nav-icon');
+    if (iconSpan && !iconSpan.innerHTML) iconSpan.innerHTML = navIcons[t.dataset.view] || '';
+  });
+  const fab = document.getElementById('fab');
+  if (fab) fab.style.display = currentView === 'dashboard' ? 'flex' : 'none';
   const v = document.getElementById('view');
   v.innerHTML = ({ dashboard: renderDashboard, sales: renderSales, analysis: renderAnalysis, settings: renderSettings }[currentView] || renderDashboard)();
+  if (quickAddOpen) renderQuickAddBody();
 }
 
 function renderGoalCard(g) {
@@ -667,6 +1148,16 @@ function renderGoalCard(g) {
   const avgPerSale = goalSales.length > 0 ? points / goalSales.length : 0;
   const extraSales = avgPerSale > 0 ? Math.round(overage / avgPerSale) : 0;
 
+  // Pace (monthly goals only): where you "should" be given elapsed days
+  let pace = null;
+  if (g.period === 'month' && g.target > 0 && !isComplete) {
+    const now = new Date();
+    const dim = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    const dom = now.getDate();
+    const frac = dom / dim;
+    pace = { expectedPct: frac * 100, diff: points - g.target * frac };
+  }
+
   const trend = trendForGoal(g);
   let badgeHtml = '';
   if (isComplete) {
@@ -682,7 +1173,8 @@ function renderGoalCard(g) {
     const overW = (overage / points) * 100;
     barHtml = `<div class="hero-bar with-overage"><div class="hero-bar-fill complete" style="width:${targetW}%"></div><div class="hero-bar-overage" style="width:${overW}%"></div></div>`;
   } else {
-    barHtml = `<div class="hero-bar"><div class="hero-bar-fill ${isComplete ? 'complete' : ''}" style="width:${displayPct}%"></div></div>`;
+    const paceMarker = pace ? `<div class="pace-marker" style="left:${pace.expectedPct}%" title="Очаквано темпо"></div>` : '';
+    barHtml = `<div class="bar-wrap"><div class="hero-bar"><div class="hero-bar-fill ${isComplete ? 'complete' : ''}" style="width:${displayPct}%"></div></div>${paceMarker}</div>`;
   }
 
   let metaHtml;
@@ -690,6 +1182,13 @@ function renderGoalCard(g) {
     metaHtml = `<div class="goal-card-meta overage-meta"><span>+${extraSales} продажби</span><span>${round(rawPct)}%</span></div>`;
   } else if (isComplete) {
     metaHtml = `<div class="goal-card-meta complete-meta"><span>Точно постигната</span><span>100%</span></div>`;
+  } else if (pace) {
+    let paceTxt;
+    const onTrackThreshold = Math.max(1, g.target * 0.02);
+    if (Math.abs(pace.diff) < onTrackThreshold) paceTxt = `<span class="pace-ontrack">по график</span>`;
+    else if (pace.diff > 0) paceTxt = `<span class="pace-ahead">↑ ${fmt(pace.diff)} т. напред</span>`;
+    else paceTxt = `<span class="pace-behind">↓ ${fmt(-pace.diff)} т. назад</span>`;
+    metaHtml = `<div class="goal-card-meta"><span>${round(displayPct)}%</span>${paceTxt}</div>`;
   } else {
     metaHtml = `<div class="goal-card-meta"><span>${round(displayPct)}%</span><span>${fmt(remaining)} т. оставащи</span></div>`;
   }
@@ -724,7 +1223,22 @@ function renderDashboard() {
   const monthlyGoals = state.goals.filter(g => g.period === 'month');
   const dailyGoals = state.goals.filter(g => g.period === 'day');
 
-  const hasAnyGoals = totalGoals > 0;
+  let paceHintHtml = '';
+  if (state.goals.length && state.services.length) {
+    const ordered = [...dailyGoals, ...monthlyGoals];
+    const now = new Date();
+    const dim = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    const daysLeft = dim - now.getDate() + 1;
+    const rows = ordered.map(g => {
+      const h = paceHintForGoal(g);
+      return `<div class="pace-hint-row"><span class="pace-hint-name">${esc(g.name)}</span><span class="pace-hint-val ${h.done ? 'done' : ''}">${h.text}</span></div>`;
+    }).join('');
+    paceHintHtml = `
+      <div class="pace-hint">
+        <div class="pace-hint-title">Колко остава · ${daysLeft} ${daysLeft === 1 ? 'ден' : 'дни'} до края на месеца</div>
+        ${rows}
+      </div>`;
+  }
 
   return `
     <div class="top-stats">
@@ -738,40 +1252,35 @@ function renderDashboard() {
       </div>
     </div>
 
-    ${hasAnyGoals ? `
-      <div class="section">
-        <h3 class="section-title">Дневни цели · днес</h3>
-        ${dailyGoals.length ? `
-          <div class="goals-grid ${dailyGoals.length === 1 ? 'single' : ''}">
-            ${dailyGoals.map(g => renderGoalCard(g)).join('')}
-          </div>
-        ` : `
-          <div class="empty">
-            <p>Нямаш дневни цели.</p>
-            <p style="margin-top:6px;font-size:11px">Дневните цели се нулират всеки ден.</p>
-          </div>
-        `}
-      </div>
+    ${paceHintHtml}
 
-      <div class="section">
-        <h3 class="section-title">Месечни цели · ${MONTHS[new Date().getMonth()]}</h3>
-        ${monthlyGoals.length ? `
-          <div class="goals-grid ${monthlyGoals.length === 1 ? 'single' : ''}">
-            ${monthlyGoals.map(g => renderGoalCard(g)).join('')}
-          </div>
-        ` : `
-          <div class="empty">
-            <p>Нямаш месечни цели.</p>
-            <p style="margin-top:6px;font-size:11px">Иди в Настройки, за да създадеш първата си цел.</p>
-          </div>
-        `}
-      </div>
-    ` : `
-      <div class="empty">
-        <p>Нямаш създадени цели.</p>
-        <p style="margin-top:6px;font-size:11px">Отиди в Настройки, за да добавиш първата си цел.</p>
-      </div>
-    `}
+    <div class="section">
+      <h3 class="section-title">Дневни цели · днес</h3>
+      ${dailyGoals.length ? `
+        <div class="goals-grid ${dailyGoals.length === 1 ? 'single' : ''}">
+          ${dailyGoals.map(g => renderGoalCard(g)).join('')}
+        </div>
+      ` : `
+        <div class="empty">
+          <p>Все още нямаш дневни цели.</p>
+          <p style="margin-top:6px;font-size:11px">Дневните цели се нулират всеки ден.</p>
+        </div>
+      `}
+    </div>
+
+    <div class="section">
+      <h3 class="section-title">Месечни цели · ${MONTHS[new Date().getMonth()]}</h3>
+      ${monthlyGoals.length ? `
+        <div class="goals-grid ${monthlyGoals.length === 1 ? 'single' : ''}">
+          ${monthlyGoals.map(g => renderGoalCard(g)).join('')}
+        </div>
+      ` : `
+        <div class="empty">
+          <p>Все още нямаш месечни цели.</p>
+          <p style="margin-top:6px;font-size:11px">Иди в Настройки, за да създадеш първата си цел.</p>
+        </div>
+      `}
+    </div>
 
     ${ranks.length ? `
     <div class="section">
@@ -785,8 +1294,33 @@ function renderDashboard() {
           </div>
           <div class="rank-value">${r.count}</div>
         </div>`; }).join('')}</div>
-    </div>` : state.services.length ? `<div class="empty"><p>Няма продажби за месеца.</p></div>` : ''}
+    </div>` : ''}
   `;
+}
+
+function goalAvgPoints(g) {
+  const incl = state.services.filter(s => g.services.includes(s.id) && (s.points || 0) > 0);
+  if (!incl.length) return 0;
+  return incl.reduce((a, s) => a + s.points, 0) / incl.length;
+}
+function paceHintForGoal(g) {
+  const avgPts = goalAvgPoints(g);
+  if (g.period === 'day') {
+    const pts = pointsForGoal(g, salesInPeriod('today'));
+    const remaining = Math.max(0, g.target - pts);
+    if (remaining <= 0) return { done: true, text: 'постигната ✓' };
+    const sales = avgPts > 0 ? Math.ceil(remaining / avgPts) : null;
+    return { text: sales != null ? `още ~${sales} продажби днес` : `още ${fmt(remaining)} т. днес` };
+  }
+  const pts = pointsForGoal(g, salesInPeriod('month'));
+  const remaining = Math.max(0, g.target - pts);
+  if (remaining <= 0) return { done: true, text: 'постигната ✓' };
+  const now = new Date();
+  const dim = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const daysLeft = Math.max(1, dim - now.getDate() + 1);
+  const perDay = remaining / daysLeft;
+  const sales = avgPts > 0 ? Math.ceil(perDay / avgPts) : null;
+  return { text: sales != null ? `~${sales} продажби/ден` : `~${fmt(perDay)} т./ден` };
 }
 
 function renderSales() {
@@ -843,7 +1377,7 @@ function renderSales() {
     <div class="section">
       <h3 class="section-title"><span>Услуги</span><span style="font-weight:400">${dateLabel}: ${totalDay}</span></h3>
       ${state.services.length ? `<div class="item-list">${state.services.map(row).join('')}</div>` :
-        `<div class="empty">${ICONS.plusCircle}<p>Няма добавени услуги. Отиди в Настройки, за да добавиш първата услуга.</p></div>`}
+        `<div class="empty">${ICONS.plusCircle}<p>Добави услуга в Настройки.</p></div>`}
     </div>
   `;
 }
@@ -974,8 +1508,8 @@ function renderSettings() {
   `;
 
   return `
-    ${goalsSection('Месечни цели', 'Цели за целия месец — нулират се на първи всеки месец.', 'month', monthlyGoals, 100)}
-    ${goalsSection('Дневни цели', 'Цели за един ден — нулират се всяка нощ.', 'day', dailyGoals, 10)}
+    ${goalsSection('Месечни цели', 'Цели за целия месец — нулират се на първи всеки месец.', 'month', monthlyGoals, 400)}
+    ${goalsSection('Дневни цели', 'Цели за един ден — нулират се всяка нощ.', 'day', dailyGoals, 50)}
 
     <div class="section">
       <h3 class="section-title"><span>Услуги</span><span style="font-weight:400">${state.services.length}</span></h3>
@@ -1005,7 +1539,7 @@ function renderSettings() {
               <button class="btn-icon" data-action="edit-service" data-id="${s.id}" aria-label="Промени">${ICONS.edit}</button>
               <button class="btn-icon danger" data-action="del-service" data-id="${s.id}" aria-label="Премахни">${ICONS.trash}</button>
             </div>`;
-        }).join('') : `<div class="empty"><p>Няма добавени услуги.</p><p style="margin-top:6px;font-size:11px">Добави първата си услуга по-долу.</p></div>`}
+        }).join('') : `<div class="empty"><p>Няма услуги.</p></div>`}
       </div>
       <div class="form-card">
         <div class="form-row">
@@ -1015,12 +1549,28 @@ function renderSettings() {
         </div>
       </div>
     </div>
+
+    <div class="section">
+      <h3 class="section-title"><span>Облачен sync</span>${syncStatusBadge()}</h3>
+      ${renderCloudSection()}
+    </div>
+
+    <div class="section">
+      <h3 class="section-title"><span>Бекъп</span></h3>
+      <p class="helper">Запази копие на данните си или ги възстанови от файл. Полезно ако смениш браузър, изтриеш кеша или искаш да преместиш данните на друго устройство.</p>
+      <div class="backup-actions">
+        <button class="btn-backup" data-action="export-data">${ICONS.download}<span>Експорт</span></button>
+        <button class="btn-backup" data-action="import-data">${ICONS.upload}<span>Импорт</span></button>
+      </div>
+      <input type="file" id="import-file" accept="application/json,.json" style="display:none"/>
+    </div>
   `;
 }
 
 document.addEventListener('click', e => {
+  if (e.target.id === 'sheet-overlay') { closeQuickAdd(); return; }
   const v = e.target.closest('[data-view]');
-  if (v) { currentView = v.dataset.view; render(); return; }
+  if (v) { currentView = v.dataset.view; closeQuickAdd(); render(); return; }
   const p = e.target.closest('[data-period]');
   if (p && !p.dataset.action) { currentPeriod = p.dataset.period; render(); return; }
   const a = e.target.closest('[data-action]');
@@ -1028,6 +1578,10 @@ document.addEventListener('click', e => {
   const act = a.dataset.action;
   if (act === 'inc') logSale(a.dataset.id, 1);
   else if (act === 'dec') logSale(a.dataset.id, -1);
+  else if (act === 'open-quickadd') openQuickAdd();
+  else if (act === 'close-quickadd') closeQuickAdd();
+  else if (act === 'qa-inc') logSale(a.dataset.id, 1, todayISO());
+  else if (act === 'qa-dec') logSale(a.dataset.id, -1, todayISO());
   else if (act === 'set-today') { currentSaleDate = todayISO(); render(); }
   else if (act === 'edit-service') startEditService(a.dataset.id);
   else if (act === 'save-edit-service') saveEditService();
@@ -1040,10 +1594,8 @@ document.addEventListener('click', e => {
     const ptsRaw = parseFloat(document.getElementById('ns-points').value);
     const points = isFinite(ptsRaw) ? Math.max(0, ptsRaw) : 1;
     const r = addService(name, points);
-    if (r === 'invalid') alert('Въведи име на услуга.');
+    if (r === 'invalid') alert('Въведи име.');
     if (r === 'exists') alert('Услугата вече съществува.');
-    document.getElementById('ns-name').value = '';
-    document.getElementById('ns-points').value = '1';
   }
   else if (act === 'add-goal') {
     const period = a.dataset.period || 'month';
@@ -1051,11 +1603,22 @@ document.addEventListener('click', e => {
     const target = +document.getElementById(`ng-target-${period}`).value;
     const r = addGoal(name, target, period);
     if (r === 'invalid') alert('Въведи име и положителен таргет.');
-    if (r === 'ok') {
-      document.getElementById(`ng-name-${period}`).value = '';
-      document.getElementById(`ng-target-${period}`).value = period === 'day' ? '10' : '100';
-    }
   }
+  else if (act === 'export-data') exportData();
+  else if (act === 'import-data') document.getElementById('import-file').click();
+  else if (act === 'cloud-sync-now') { if (supa && supaUser) loadFromCloud(); }
+  else if (act === 'auth-mode') { authMode = a.dataset.mode; render(); }
+  else if (act === 'auth-signin') {
+    const email = document.getElementById('auth-email').value.trim();
+    const password = document.getElementById('auth-password').value;
+    cloudSignIn(email, password);
+  }
+  else if (act === 'auth-signup') {
+    const email = document.getElementById('auth-email').value.trim();
+    const password = document.getElementById('auth-password').value;
+    cloudSignUp(email, password);
+  }
+  else if (act === 'auth-signout') cloudSignOut();
 });
 
 document.addEventListener('change', e => {
@@ -1065,6 +1628,11 @@ document.addEventListener('change', e => {
     if (v > todayISO()) v = todayISO();
     currentSaleDate = v;
     render();
+    return;
+  }
+  if (e.target.id === 'import-file' && e.target.files && e.target.files.length) {
+    importData(e.target.files[0]);
+    e.target.value = '';
     return;
   }
   const t = e.target.dataset.toggleSvc;
@@ -1078,9 +1646,21 @@ document.addEventListener('keydown', e => {
     if (e.key === 'Enter') { e.preventDefault(); saveEditService(); }
     else if (e.key === 'Escape') { e.preventDefault(); cancelEditService(); }
   }
+  if (e.target.id === 'auth-email' || e.target.id === 'auth-password') {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const email = document.getElementById('auth-email').value.trim();
+      const password = document.getElementById('auth-password').value;
+      if (authMode === 'signin') cloudSignIn(email, password);
+      else cloudSignUp(email, password);
+    }
+  }
 });
 
 render();
+initCloud();
+window.addEventListener('offline', () => { if (supaUser) { syncStatus = 'offline'; render(); } });
+window.addEventListener('online', () => { if (supaUser && syncStatus === 'offline') { syncStatus = 'idle'; loadFromCloud(); } });
 </script>
 </body>
 </html>
