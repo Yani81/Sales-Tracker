@@ -603,7 +603,7 @@ function saveState(s) { s._updatedAt = Date.now(); try { localStorage.setItem(ST
 // ============ CLOUD SYNC ============
 // ⬇⬇⬇ ПОПЪЛНИ ТУК (Settings → API в Supabase) ⬇⬇⬇
 const SUPABASE_URL = 'https://ebgccfwrxfiiefajodjd.supabase.co';          // напр. 'https://abcdefg.supabase.co'
-const SUPABASE_ANON_KEY = 'sb_publishable_7yjBTGog2DWeKaWgsmMWUw_zraLhs1v';     // anon public key, започва с 'eyJ...'
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2NjZndyeGZpaWVmYWpvZGpkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzODQ3NDMsImV4cCI6MjA5NTk2MDc0M30.zwvaSDeREJcoPRWhggQTqpa518xzF31J3gMeoYutWgw';     // anon public key, започва с 'eyJ...'
 // ⬆⬆⬆ ПОПЪЛНИ ТУК ⬆⬆⬆
 
 let supa = null;
