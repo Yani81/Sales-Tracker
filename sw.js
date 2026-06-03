@@ -5,7 +5,7 @@
 //   - Cache-first for static assets
 //   - Never cache Supabase API calls (they must be live)
 
-const VERSION = 'v1';
+const VERSION = 'v2';
 const CACHE_NAME = `sales-tracker-${VERSION}`;
 
 const APP_SHELL = [
