@@ -85,23 +85,23 @@
     input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
     input[type="number"] { -moz-appearance: textfield; }
 
-    html, body { height: 100%; }
+    html, body { margin: 0; }
     body {
-      margin: 0;
       font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: var(--bg-0);
       color: var(--text-1);
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       font-feature-settings: 'ss01', 'cv11';
-      display: flex;
-      justify-content: center;
+      min-height: 100dvh;
     }
 
     .app {
       width: 100%;
       max-width: 560px;
-      padding: calc(1.5rem + env(safe-area-inset-top)) calc(1.125rem + env(safe-area-inset-left)) calc(220px + env(safe-area-inset-bottom)) calc(1.125rem + env(safe-area-inset-right));
+      margin: 0 auto;
+      padding: calc(1.5rem + env(safe-area-inset-top)) calc(1.125rem + env(safe-area-inset-left)) calc(140px + env(safe-area-inset-bottom)) calc(1.125rem + env(safe-area-inset-right));
+      box-sizing: border-box;
     }
 
     .bottom-nav {
