@@ -2,7 +2,7 @@
 <html lang="bg">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff" id="meta-theme-color">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -101,7 +101,7 @@
     .app {
       width: 100%;
       max-width: 560px;
-      padding: 1.5rem 1.125rem calc(200px + env(safe-area-inset-bottom));
+      padding: calc(1.5rem + env(safe-area-inset-top)) calc(1.125rem + env(safe-area-inset-left)) calc(160px + env(safe-area-inset-bottom)) calc(1.125rem + env(safe-area-inset-right));
     }
 
     .bottom-nav {
